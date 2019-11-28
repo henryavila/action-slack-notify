@@ -67,7 +67,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "BUILD_STATUS is required")
 		os.Exit(1)
 	}
-	text := status + ": " + text
+	text = status + ": " + text
 
 	fields:= []Field{             
 		//{
