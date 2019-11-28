@@ -76,6 +76,11 @@ func main() {
 		//	Short: true,
 		//},        
 		{
+			Title: "Repository",
+			Value: os.Getenv("GITHUB_REPOSITORY"),
+			Short: false,
+		},
+		{
 			Title: "Ref",
 			Value: os.Getenv("GITHUB_REF"),
 			Short: true,
@@ -84,11 +89,6 @@ func main() {
 			Title: "Event",
 			Value: os.Getenv("GITHUB_EVENT_NAME"),
 			Short: true,
-		},
-		{
-			Title: "Repository",
-			Value: os.Getenv("GITHUB_REPOSITORY"),
-			Short: false,
 		},
 		{
 			Title: "Repo Action URL",
