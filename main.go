@@ -62,13 +62,19 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Message is required")
 		os.Exit(1)
 	}
+	status := os.Getenv(EnvStatus)
+	if text == "" {
+		fmt.Fprintln(os.Stderr, "BUILD_STATUS is required")
+		os.Exit(1)
+	}
+	text := status + ": " + text
 
 	fields:= []Field{             
-		{
-			Title: "Status",
-			Value: envOr(os.Getenv("BUILD_STATUS"), "undefined"),
-			Short: true,
-		},        
+		//{
+		//	Title: "Status",
+		//	Value: envOr(os.Getenv("BUILD_STATUS"), "undefined"),
+		//	Short: true,
+		//},        
 		{
 			Title: "Ref",
 			Value: os.Getenv("GITHUB_REF"),
@@ -80,7 +86,7 @@ func main() {
 			Short: true,
 		},
 		{
-			Title: "Repo",
+			Title: "Repository",
 			Value: os.Getenv("GITHUB_REPOSITORY"),
 			Short: false,
 		},
