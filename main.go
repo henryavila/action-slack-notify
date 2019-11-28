@@ -66,7 +66,7 @@ func main() {
 	fields:= []Field{             
 		{
 			Title: "Status",
-			Value: envOr(os.Getenv("BUILD_STATUS"), "undefined")
+			Value: envOr(os.Getenv("BUILD_STATUS"), "undefined"),
 			Short: true,
 		},        
 		{
