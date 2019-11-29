@@ -20,7 +20,6 @@ const (
 	EnvSiteName      = "SITE_NAME"
 	EnvHostName      = "HOST_NAME"
 	EnvDepolyPath    = "DEPLOY_PATH"
-	EnvStatus        = "BUILD_STATUS"
 )
 
 type Webhook struct {
@@ -52,43 +51,28 @@ type Field struct {
 }
 
 func main() {
-
 	endpoint := os.Getenv(EnvSlackWebhook)
 	if endpoint == "" {
 		fmt.Fprintln(os.Stderr, "URL is required")
 		os.Exit(1)
 	}
-
-    status := os.Getenv(EnvStatus)
-    if status == "" {
-        fmt.Fprintln(os.Stderr, "BUILD_STATUS is required")
-        os.Exit(1)
-    }
-
-
-	if os.Getenv(EnvSlackMessage) == "" {
+	text := os.Getenv(EnvSlackMessage)
+	if text == "" {
 		fmt.Fprintln(os.Stderr, "Message is required")
 		os.Exit(1)
 	}
-    text := status + ": " + os.Getenv(EnvSlackMessage)
 
 	fields:= []Field{
-		//{
-		//	Title: "Status",
-		//	Value: envOr(os.Getenv("BUILD_STATUS"), "undefined"),
-		//	Short: true,
-		//},
 		{
-			Title: "Repository",
-			Value: os.Getenv("GITHUB_REPOSITORY"),
-			Short: false,
-		},
-		{
+            Title: "Repository",
+            Value: os.Getenv("GITHUB_REPOSITORY"),
+            Short: false,
+        },
+        {
 			Title: "Ref",
 			Value: os.Getenv("GITHUB_REF"),
 			Short: true,
-		},
-		{
+		},                {
 			Title: "Event",
 			Value: os.Getenv("GITHUB_EVENT_NAME"),
 			Short: true,
@@ -100,7 +84,7 @@ func main() {
 		},
 		{
 			Title: os.Getenv(EnvSlackTitle),
-			Value: text,
+			Value: envOr(EnvSlackMessage, "EOM"),
 			Short: false,
 		},
 	}
@@ -128,12 +112,12 @@ func main() {
 		Channel:  os.Getenv(EnvSlackChannel),
 		Attachments: []Attachment{
 			{
-				Fallback: envOr(text, "GITHUB_ACTION=" + os.Getenv("GITHUB_ACTION") + " \n GITHUB_ACTOR=" + os.Getenv("GITHUB_ACTOR") + " \n GITHUB_EVENT_NAME=" + os.Getenv("GITHUB_EVENT_NAME") + " \n GITHUB_REPOSITORY=" + os.Getenv("GITHUB_REPOSITORY") +  " \n GITHUB_REF=" + os.Getenv("GITHUB_REF") + " \n GITHUB_REPOSITORY=" + os.Getenv("GITHUB_REPOSITORY") + " \n GITHUB_WORKFLOW=" + os.Getenv("GITHUB_WORKFLOW")),
+				Fallback: envOr(EnvSlackMessage, "GITHUB_ACTION=" + os.Getenv("GITHUB_ACTION") + " \n GITHUB_ACTOR=" + os.Getenv("GITHUB_ACTOR") + " \n GITHUB_EVENT_NAME=" + os.Getenv("GITHUB_EVENT_NAME") + " \n GITHUB_REF=" + os.Getenv("GITHUB_REF") + " \n GITHUB_REPOSITORY=" + os.Getenv("GITHUB_REPOSITORY") + " \n GITHUB_WORKFLOW=" + os.Getenv("GITHUB_WORKFLOW")),
 				Color:      envOr(EnvSlackColor, "good"),
 				AuthorName: envOr(EnvGithubActor, ""),
 				AuthorLink: "http://github.com/" + os.Getenv(EnvGithubActor),
 				AuthorIcon: "http://github.com/" + os.Getenv(EnvGithubActor) + ".png?size=32",
-				Footer: "<https://iasdvirtual.com.br|Virtual SDA Builds>",
+				Footer: "<https://github.com/virtual-sda|Virtual SDA Builds>",
 				Fields: fields,
 			},
 		},
