@@ -42,7 +42,7 @@ type Attachment struct {
 	AuthorIcon string  `json:"author_icon,omitempty"`
 	Footer     string  `json:"footer,omitempty"`
 	Fields     []Field `json:"fields,omitempty"`
-	
+
 }
 
 type Field struct {
@@ -52,29 +52,33 @@ type Field struct {
 }
 
 func main() {
+
 	endpoint := os.Getenv(EnvSlackWebhook)
 	if endpoint == "" {
 		fmt.Fprintln(os.Stderr, "URL is required")
 		os.Exit(1)
 	}
-	text := os.Getenv(EnvSlackMessage)
-	if text == "" {
+
+    status := os.Getenv(EnvStatus)
+    if status == "" {
+        fmt.Fprintln(os.Stderr, "BUILD_STATUS is required")
+        os.Exit(1)
+    }
+
+
+	if os.Getenv(EnvSlackMessage) == "" {
 		fmt.Fprintln(os.Stderr, "Message is required")
 		os.Exit(1)
 	}
-	status := os.Getenv(EnvStatus)
-	if text == "" {
-		fmt.Fprintln(os.Stderr, "BUILD_STATUS is required")
-		os.Exit(1)
-	}
-	text = status + ": " + text
 
-	fields:= []Field{             
+    text := status + ": " + os.Getenv(EnvSlackMessage)
+
+	fields:= []Field{
 		//{
 		//	Title: "Status",
 		//	Value: envOr(os.Getenv("BUILD_STATUS"), "undefined"),
 		//	Short: true,
-		//},        
+		//},
 		{
 			Title: "Repository",
 			Value: os.Getenv("GITHUB_REPOSITORY"),
@@ -84,7 +88,7 @@ func main() {
 			Title: "Ref",
 			Value: os.Getenv("GITHUB_REF"),
 			Short: true,
-		},                
+		},
 		{
 			Title: "Event",
 			Value: os.Getenv("GITHUB_EVENT_NAME"),
